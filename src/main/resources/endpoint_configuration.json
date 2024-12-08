@@ -1,0 +1,36 @@
+{
+  "sources": [
+    {
+      "name": "IMS_src",
+      "description": "IMS Source Endpoint for testing",
+      "role": "source",
+      "type": "IBM IMS",
+      "server": "zos9.qliktech.com",
+      "username": "##########",
+      "password": "##########",
+      "worksapce": "####",
+      "data_source": "####"
+    }
+  ],
+  "targets": [
+    {
+      "name": "Oracle_trg",
+      "description": "Oracle target Endpoint for testing",
+      "role": "target",
+      "type": "oracle",
+      "server": "tzachoracle19.qdinet/orcl",
+      "username": "system",
+      "password": "#######"
+    },
+    {
+      "name": "SQL_trg",
+      "description": "Endpoint for testing",
+      "role": "target",
+      "type": "SQL Server",
+      "server": "tzachoracle19.qdinet",
+      "username": "sa",
+      "password": "#########",
+      "database": "#####"
+    }
+  ]
+}
