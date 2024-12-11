@@ -1,4 +1,4 @@
-package drivers;
+package browsers;
 import org.openqa.selenium.WebDriver;
 import org.openqa.selenium.chrome.ChromeDriver;
 import org.openqa.selenium.chrome.ChromeOptions;
@@ -21,7 +21,7 @@ public class WebDriverFactory  {
         options.setAcceptInsecureCerts(true);
         options.addArguments("--headless=new");
         options.setExperimentalOption("excludeSwitches", new String[] {"enable-automation"});
-        ChromeDriver driver = new ChromeDriver(options);
+        WebDriver driver = new ChromeDriver(options);
         return driver;
     }
 
