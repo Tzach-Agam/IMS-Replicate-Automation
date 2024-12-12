@@ -12,6 +12,7 @@ import static utilities.UtilitiesMethods.safeClick;
  * functionalities like creating, managing, and controlling tasks.
  */
 public class TasksPage {
+
     private WebDriver driver;
     private Actions actions;
 

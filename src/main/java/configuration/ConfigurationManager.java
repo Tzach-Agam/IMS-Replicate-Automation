@@ -68,6 +68,15 @@ public class ConfigurationManager {
     }
 
     // Method to get the IMS DB server
+    public String getTargetSchema() {
+        return ini.get("Default_Schemas", "replicate_selenium_target");
+    }
+
+    public String getControlSchema() {
+        return ini.get("Default_Schemas", "replicate_selenium_control");
+    }
+
+    // Method to get the IMS DB server
     public String getIMSServer() {
         return ini.get("IMS_DB", "server");
     }

@@ -3,32 +3,28 @@ package replicate_pages;
 import org.openqa.selenium.By;
 import org.openqa.selenium.WebDriver;
 import org.openqa.selenium.WebElement;
-
 import java.util.Random;
-
 import static utilities.UtilitiesMethods.safeClick;
+
 
 /**
  * The NewTaskPage class represents the 'New Task Creation' dialog in Qlik Replicate.
  * It provides methods for entering task details, configuring options, and managing the task creation process.
  */
 public class NewTaskPage {
-    // WebDriver instance to interact with the browser
+
     private WebDriver driver;
 
     /**
      * Constructor to initialize the NewTaskPage object.
-     *
      * @param driver WebDriver instance for Selenium automation.
      */
     public NewTaskPage(WebDriver driver) {
         this.driver = driver;
     }
 
-
     /**
      * Creates a new task name into the input field.
-     *
      * @param taskName The name of the task to be created.
      */
     public String randomTaskName(String taskName) {
@@ -40,7 +36,6 @@ public class NewTaskPage {
 
     /**
      * Enters the task name into the input field.
-     *
      * @param taskName The name of the task to be created.
      */
     public void enterTaskName(String taskName) {
@@ -51,7 +46,6 @@ public class NewTaskPage {
 
     /**
      * Enters the task description into the input field.
-     *
      * @param description A brief description of the task to be created.
      */
     public void enterDescription(String description) {
@@ -101,7 +95,6 @@ public class NewTaskPage {
 
     /**
      * Creates a new task by entering the task name and description and then closing the dialog.
-     *
      * @param name        The name of the task to be created.
      * @param description A brief description of the task to be created.
      */

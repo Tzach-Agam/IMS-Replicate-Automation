@@ -6,26 +6,25 @@ import org.openqa.selenium.WebElement;
 import org.openqa.selenium.interactions.Actions;
 import org.openqa.selenium.support.ui.ExpectedConditions;
 import org.openqa.selenium.support.ui.WebDriverWait;
-
 import java.time.Duration;
-
 import static utilities.UtilitiesMethods.safeClick;
 
+
+/**
+ * The TaskSettings class represents the 'Task Settings' dialog box on Qlik Replicate. In it, you configure
+ * task-specific replication settings. The class will provide methods for the task settings page functionality,
+ * like setting target replication schemas or adding logs.
+ */
 public class TaskSettingsPage {
-    /**
-     * The TaskSettings class represents the 'Task Settings' dialog box on Qlik Replicate. In it, you configure
-     * task-specific replication settings. The class will provide methods for the task settings page functionality,
-     * like setting target replication schemas or adding logs.
-     */
 
     private WebDriver driver;
     private Actions actions;
     private WebDriverWait wait;
 
+    /** Initialize the TaskSettings object
+     * @param driver WebDriver instance for Selenium automation.
+     */
     public TaskSettingsPage(WebDriver driver) {
-        /** Initialize the TaskSettings object
-         * @param driver WebDriver instance for Selenium automation.
-         */
         this.driver = driver;
         this.actions = new Actions(driver);
         this.wait = new WebDriverWait(driver, Duration.ofSeconds(10));
@@ -151,6 +150,7 @@ public class TaskSettingsPage {
      * 'TRACE' and 'VERBOSE'.
      */
     public void changeComponentLogging(String loggingLevel, String... components) {
+        taskLogging();
         try {
             for (String component : components) {
                 for (int i = 1; i <= 27; i++) {
@@ -200,7 +200,6 @@ public class TaskSettingsPage {
         this.targetSchema(targetSchema);
         this.controlTablesClick();
         this.controlSchema(controlSchema);
-        this.okButton();
     }
 }
 

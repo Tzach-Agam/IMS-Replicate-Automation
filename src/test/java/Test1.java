@@ -57,6 +57,7 @@ public class Test1 {
         this.tableSelection = new TableSelection(driver);
         this.taskSettingsPage = new TaskSettingsPage(driver);
 
+
     }
     public void initializeWebDriver(){
         this.driver.get(config.getLoginURL());
@@ -77,8 +78,8 @@ public class Test1 {
         this.tableSelection.selectChosenTables(new String[]{"STUDENT", "STUDENT_COURSE", "STUDENT_ST"});
         this.designerPage.enterTaskSettings();
         this.taskSettingsPage.setTaskSettingsGeneral("replicate_target_schema","replicate_control_schema");
-
-
+        this.taskSettingsPage.changeComponentLogging("VERBOSE","TARGET_LOAD", "SOURCE_CAPTURE");
+        this.taskSettingsPage.okButton();
     }
 
     public void endpointsCreation() throws InterruptedException {

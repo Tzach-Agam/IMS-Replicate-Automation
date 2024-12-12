@@ -19,7 +19,7 @@ public class WebDriverFactory  {
         ChromeOptions options = new ChromeOptions();
         options.addArguments("--incognito");
         options.setAcceptInsecureCerts(true);
-        options.addArguments("--headless=new");
+        //options.addArguments("--headless=new");
         options.setExperimentalOption("excludeSwitches", new String[] {"enable-automation"});
         WebDriver driver = new ChromeDriver(options);
         return driver;

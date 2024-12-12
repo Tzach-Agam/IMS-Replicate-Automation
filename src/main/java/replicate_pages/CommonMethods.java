@@ -10,9 +10,18 @@ import java.time.Duration;
 import static utilities.UtilitiesMethods.safeClick;
 
 
+/**
+ * The Common_functions class provides a set of common utility functions that can be used across various pages and
+ * actions in Qlik Replicate. These functions include handling secure browser connections, waiting for loader icons
+ * to complete, and navigating to different pages
+ */
 public class CommonMethods {
+
     private final WebDriver driver;
 
+    /** Initialize the CommonMethods object
+     * @param driver WebDriver instance for Selenium automation.
+     */
     public CommonMethods(WebDriver driver) {
         this.driver = driver;
     }
@@ -48,7 +57,6 @@ public class CommonMethods {
     /**
      * Navigate to the main page in Qlik Replicate.
      * This method opens the dropdown menu and selects the target page based on the provided 'target_page'.
-     *
      * @param targetPage The name of the target page to navigate to (e.g., "tasks" or "server").
      */
     public void navigateToMainPage(String targetPage) {

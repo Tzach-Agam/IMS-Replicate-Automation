@@ -1,30 +1,31 @@
 package replicate_pages;
 
 import org.openqa.selenium.By;
+import org.openqa.selenium.StaleElementReferenceException;
 import org.openqa.selenium.WebDriver;
 import org.openqa.selenium.WebElement;
 import org.openqa.selenium.interactions.Actions;
 import static utilities.UtilitiesMethods.safeClick;
-
 import java.io.IOException;
 import java.time.Duration;
-import java.util.Map;
 import java.util.Random;
-
 import configuration.ConfigurationManager;
 import org.openqa.selenium.support.ui.ExpectedConditions;
 import org.openqa.selenium.support.ui.WebDriverWait;
 
+
+/**
+ * The ManageEndpoints class represents the 'Manage Endpoints Connections' window in Qlik Replicate.
+ * It provides methods to interact with functionalities like creating, deleting, and configuring source
+ * and target endpoints used for replication tasks.
+ */
 public class ManageEndpointsPage {
-    /**
-     * The ManageEndpoints class represents the 'Manage Endpoints Connections' window in Qlik Replicate.
-     * It provides methods to interact with functionalities like creating, deleting, and configuring source
-     * and target endpoints used for replication tasks.
-     */
+
     private WebDriver driver;
     private Actions actions;
     private ConfigurationManager config;
     private WebDriverWait wait;
+
     /**
      * Initialize the ManageEndpoints object.
      *
@@ -63,9 +64,15 @@ public class ManageEndpointsPage {
      * @param name The name of the endpoint.
      */
     public void enterEndpointName(String name) {
-        WebElement endpointName = this.wait.until(ExpectedConditions.elementToBeClickable(By.xpath("//*[@id='endpointName']")));
-        endpointName.clear();
-        endpointName.sendKeys(name);
+        try {
+            WebElement endpointName = this.wait.until(ExpectedConditions.elementToBeClickable(By.xpath("//*[@id='endpointName']")));
+            endpointName.clear();
+            endpointName.sendKeys(name);
+        } catch (StaleElementReferenceException e) {
+            WebElement endpointName = this.wait.until(ExpectedConditions.elementToBeClickable(By.xpath("//*[@id='endpointName']")));
+            endpointName.clear();
+            endpointName.sendKeys(name);
+        }
     }
 
     /**
@@ -92,7 +99,7 @@ public class ManageEndpointsPage {
     }
 
     /**
-     * Choose IMS IBM source as the type of the endpoint.
+     * Create IMS IBM source as the type of the endpoint.
      */
     public void createIMSsource(String endpointName) throws InterruptedException {
         newEndpointConnection();
@@ -116,7 +123,6 @@ public class ManageEndpointsPage {
         Thread.sleep(200);
         testConnectionValid();
         save();
-        /*close();*/
     }
 
     public void createSQLServertarget(String endpointName) throws InterruptedException {
@@ -149,7 +155,7 @@ public class ManageEndpointsPage {
         enterType("oracle");
         WebElement endpointToSelect = driver.findElement(By.xpath("//*[text()='Oracle']"));
         safeClick(endpointToSelect);
-        WebElement oracleDSN = driver.findElement(By.xpath("//*[@id=\"server\"]"));
+        WebElement oracleDSN = wait.until(ExpectedConditions.elementToBeClickable(By.xpath("//*[@id=\"server\"]")));
         oracleDSN.sendKeys(config.getOracleDSN());
         WebElement oracleUsername = driver.findElement(By.xpath("//*[@id=\"username\"]"));
         oracleUsername.sendKeys(config.getOracleUsername());
@@ -158,10 +164,7 @@ public class ManageEndpointsPage {
         Thread.sleep(200);
         testConnectionValid();
         save();
-        /*Thread.sleep(100);
-        close();*/
     }
-
 
     /**
      * Choose 'SQL Server authentication' for an SQL Server endpoint.
