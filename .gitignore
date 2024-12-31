@@ -6,7 +6,8 @@
 \.idea\misc.xml
 \.idea\vcs.xml
 \.idea\workspace.xml
-\target\
+/target/
+/.idea/
 
 !.mvn/wrapper/maven-wrapper.jar
 !**/src/main/**/target/
