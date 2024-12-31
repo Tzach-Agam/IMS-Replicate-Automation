@@ -6,7 +6,6 @@ import org.openqa.selenium.ElementNotInteractableException;
 import java.io.*;
 import java.nio.file.*;
 import java.util.*;
-import java.util.stream.*;
 
 public class UtilitiesMethods {
     /**
@@ -73,14 +72,4 @@ public class UtilitiesMethods {
             throw new AssertionError("Data file is not identical to Good file");
         }
     }
-
-
-    public static void main(String[] args) throws IOException, InterruptedException {
-        //moveFileToTargetDir("C:\\Tzach\\wow\\amazing", "C:\\Tzach\\wow\\amazing\\rmtree", "copyfile_example.txt");
-        compareFiles("C:\\Tzach\\wow\\amazing\\copyfile_example.txt", "C:\\Tzach\\wow\\amazing\\copyfile_example - Copy.txt");
-
     }
-
-
-
-}

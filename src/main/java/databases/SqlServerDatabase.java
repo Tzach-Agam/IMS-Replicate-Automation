@@ -6,12 +6,7 @@ import java.io.IOException;
 import java.sql.*;
 import configuration.ConfigurationManager;
 
-/**
- * A class for interacting with an Oracle database.
- * This class provides functionality to connect to an Oracle database,
- * execute queries, manage schemas and users, fetch results, and export metadata and data.
- */
-public class OracleDatabase {
+public class SqlServerDatabase {
 
     private String DB_URL;
     private String USER; // Replace with your username
@@ -19,20 +14,17 @@ public class OracleDatabase {
     private ConfigurationManager config;
     private Connection connection;
 
-    /**
-     * Constructor to initialize OracleDatabase with configuration.
-     * Sets up database connection details based on the configuration file.
-     * @param configFile ConfigurationManager object containing database settings
-     */
-    public OracleDatabase(ConfigurationManager configFile) {
+    public SqlServerDatabase(ConfigurationManager configFile) throws IOException {
+        //config = new ConfigurationManager("src/main/resources/config.ini");
         config = configFile;
-        DB_URL = "jdbc:oracle:thin:@" + config.getOracleDSN();
-        USER = "system";
-        PASSWORD = "oracle";
+        DB_URL = "jdbc:sqlserver://" + config.getMSSQLServer() + ";databaseName=" + config.getMSSQLDatabase() +";encrypt=true;TrustServerCertificate=true";
+        USER = "sa"; // Default SQL Server admin user
+        PASSWORD = "nrWEL7zZwmXPZueb"; // Replace with your password
     }
 
     /**
-     * Establishes a connection to the Oracle database.
+     * Establishes a connection to the SQL Server database.
+     *
      * @throws SQLException if a database access error occurs
      */
     public void connect() throws SQLException {
@@ -43,7 +35,7 @@ public class OracleDatabase {
     }
 
     /**
-     * Executes a query (INSERT, UPDATE, DELETE, etc.) on the Oracle database.
+     * Executes a query (INSERT, UPDATE, DELETE, etc.) on the SQL Server database.
      *
      * @param query The SQL query to execute
      * @throws SQLException if a database access error occurs
@@ -51,6 +43,7 @@ public class OracleDatabase {
     public void executeQuery(String query) throws SQLException {
         try (Statement statement = connection.createStatement()) {
             statement.execute(query);
+            System.out.println("Query has been executed");
         }
     }
 
@@ -66,55 +59,21 @@ public class OracleDatabase {
         return statement.executeQuery(query);
     }
 
-    /**
-     * Checks if the specified schema/user does not exist in the database.
-     * This method queries the DBA_USERS view to determine if the user does not exist in the Oracle database.
-     * If the user does not exist, it returns true; otherwise, it returns false.
-     * @param schema The name of the schema/user to check for non-existence.
-     * @return true if the user does not exist, false otherwise.
-     * @throws SQLException if a database access error occurs during the check.
-     */
-    public boolean doesUserNotExist(String schema) throws SQLException {
-        String checkUserQuery = "SELECT 1 FROM dba_users WHERE username = '" + schema + "'";
-        try (ResultSet resultSet = fetchResults(checkUserQuery)) {
-            return !resultSet.next(); // Return true if no result is found
-        } catch (SQLException e) {
-            System.err.println("Error checking if user exists: " + e.getMessage());
-            throw e; // Rethrow exception to let the caller handle it
-        }
-    }
-
-    /**
-     * Create a new user in the Oracle database, and immediately give it Admin privileges. Users act like schemas
-     * In an oracle database.
-     * @param userName: The name of the user to create
-     */
-    public void createUser(String userName) {
-        String create_user_query = "create user \"" + userName + "\" identified by oracle";
-        String grant_user_query = "GRANT DBA TO \"" + userName + "\" WITH ADMIN OPTION";
+    public void createSchema(String schemaName) {
+        String createSchemaQuery = "CREATE SCHEMA " + schemaName;
         try {
-            executeQuery(create_user_query);
-            executeQuery(grant_user_query);
-            System.out.println("User " + userName + " created");
+            executeQuery(createSchemaQuery);
+            System.out.println("Schema " + schemaName + " created");
         } catch (SQLException e) {
             throw new RuntimeException(e);
         }
     }
 
-    /**
-     * Drops a user in the Oracle database in an oracle database.
-     * @param userName: The name of the user to create
-     */
-    public void dropUser(String userName) throws SQLException {
-        // Check if the schema exists first
-        if (doesUserNotExist(userName)) {
-            System.err.println("User '" + userName + "' does not exist.");
-            return;
-        }
-        String dropUserQuery = "DROP USER \"" + userName + "\"";
+    public void dropSchema(String schemaName) {
+        String createSchemaQuery = "DROP SCHEMA " + schemaName;
         try {
-            executeQuery(dropUserQuery);
-            System.out.println("User " + userName + " dropped");
+            executeQuery(createSchemaQuery);
+            System.out.println("Schema " + schemaName + " dropped");
         } catch (SQLException e) {
             throw new RuntimeException(e);
         }
@@ -127,24 +86,13 @@ public class OracleDatabase {
      * @throws SQLException if a database access error occurs
      */
     public void dropAllTables(String schema) throws SQLException {
-        // Check if the schema exists first
-        if (doesUserNotExist(schema)) {
-            System.err.println("User '" + schema + "' does not exist.");
-            return;
-        }
-
-        String fetchTablesQuery = "SELECT table_name FROM all_tables WHERE owner = '" + schema + "'";
+        String fetchTablesQuery = "SELECT TABLE_NAME FROM INFORMATION_SCHEMA.TABLES WHERE TABLE_SCHEMA = '" + schema + "'";
         try (ResultSet resultSet = fetchResults(fetchTablesQuery)) {
             while (resultSet.next()) {
-                String tableName = resultSet.getString("table_name");
-                String dropTableQuery = "DROP TABLE \"" + schema + "\".\"" + tableName + "\" CASCADE CONSTRAINTS";
-                try {
-                    executeQuery(dropTableQuery);
-                    System.out.println("Dropped table: " + tableName);
-                } catch (SQLException e) {
-                    System.err.println("Error dropping table: " + tableName);
-                    throw e; // Rethrow the error if needed
-                }
+                String tableName = resultSet.getString("TABLE_NAME");
+                String dropTableQuery = "DROP TABLE [" + schema + "].[" + tableName + "]";
+                executeQuery(dropTableQuery);
+                System.out.println("Dropped table: " + tableName);
             }
         }
     }
@@ -158,13 +106,14 @@ public class OracleDatabase {
      * @throws IOException if a file access error occurs
      */
     public void exportSchemaToCSV(String schema, String filePath) throws SQLException, IOException {
-        String fetchTablesQuery = "SELECT table_name FROM all_tables WHERE owner = '" + schema + "'";
+        String fetchTablesQuery = "SELECT TABLE_NAME FROM INFORMATION_SCHEMA.TABLES WHERE TABLE_SCHEMA = '" + schema + "'";
         try (ResultSet tablesResultSet = fetchResults(fetchTablesQuery);
              FileWriter writer = new FileWriter(filePath)) {
 
             boolean dataWritten = false;
+
             while (tablesResultSet.next()) {
-                String tableName = tablesResultSet.getString("table_name");
+                String tableName = tablesResultSet.getString("TABLE_NAME");
 
                 // Write table separator
                 writer.write("--------------\n");
@@ -172,15 +121,13 @@ public class OracleDatabase {
 
                 // Fetch primary key columns
                 String fetchPKQuery =
-                        "SELECT col.column_name " +
-                                "FROM all_constraints con " +
-                                "JOIN all_cons_columns col " +
-                                "ON con.constraint_name = col.constraint_name " +
-                                "AND con.owner = col.owner " +
-                                "WHERE con.constraint_type = 'P' " +
-                                "AND con.owner = '" + schema + "' " +
-                                "AND con.table_name = '" + tableName + "' " +
-                                "ORDER BY col.position";
+                        "SELECT COLUMN_NAME " +
+                                "FROM INFORMATION_SCHEMA.TABLE_CONSTRAINTS TC " +
+                                "JOIN INFORMATION_SCHEMA.CONSTRAINT_COLUMN_USAGE CCU " +
+                                "ON TC.CONSTRAINT_NAME = CCU.CONSTRAINT_NAME " +
+                                "WHERE TC.CONSTRAINT_TYPE = 'PRIMARY KEY' " +
+                                "AND TC.TABLE_SCHEMA = '" + schema + "' " +
+                                "AND TC.TABLE_NAME = '" + tableName + "'";
 
                 StringBuilder primaryKeyColumns = new StringBuilder();
                 try (ResultSet pkResultSet = fetchResults(fetchPKQuery)) {
@@ -188,7 +135,7 @@ public class OracleDatabase {
                         if (!primaryKeyColumns.isEmpty()) {
                             primaryKeyColumns.append(", ");
                         }
-                        primaryKeyColumns.append(pkResultSet.getString("column_name"));
+                        primaryKeyColumns.append(pkResultSet.getString("COLUMN_NAME"));
                     }
                 }
 
@@ -200,25 +147,27 @@ public class OracleDatabase {
 
                 // Fetch column metadata
                 String fetchColumnsQuery =
-                        "SELECT column_name, data_type, data_length, nullable " +
-                                "FROM all_tab_columns " +
-                                "WHERE owner = '" + schema + "' " +
-                                "AND table_name = '" + tableName + "'";
+                        "SELECT COLUMN_NAME, DATA_TYPE, CHARACTER_MAXIMUM_LENGTH, IS_NULLABLE " +
+                                "FROM INFORMATION_SCHEMA.COLUMNS " +
+                                "WHERE TABLE_SCHEMA = '" + schema + "' " +
+                                "AND TABLE_NAME = '" + tableName + "'";
+
                 try (ResultSet columnsResultSet = fetchResults(fetchColumnsQuery)) {
                     while (columnsResultSet.next()) {
-                        String columnName = columnsResultSet.getString("column_name");
-                        String dataType = columnsResultSet.getString("data_type");
-                        String dataLength = columnsResultSet.getString("data_length");
-                        String allowDBNull = "Y".equals(columnsResultSet.getString("nullable")) ? "True" : "False";
+                        String columnName = columnsResultSet.getString("COLUMN_NAME");
+                        String dataType = columnsResultSet.getString("DATA_TYPE");
+                        String length = columnsResultSet.getString("CHARACTER_MAXIMUM_LENGTH");
+                        String allowDBNull = "YES".equals(columnsResultSet.getString("IS_NULLABLE")) ? "True" : "False";
+
                         writer.write("Column: " + columnName + ", Type: " + dataType +
-                                ("VARCHAR2".equals(dataType) ? ", Length: " + dataLength : "") +
+                                (length != null ? ", Length: " + length : "") +
                                 ", AllowDBNull: " + allowDBNull + "\n");
                     }
                     writer.write("\n");
                 }
 
-                // Fetch data
-                String fetchTableDataQuery = "SELECT * FROM \"" + schema + "\".\"" + tableName + "\"";
+                // Fetch table data
+                String fetchTableDataQuery = "SELECT * FROM [" + schema + "].[" + tableName + "]";
                 try (ResultSet tableResultSet = fetchResults(fetchTableDataQuery)) {
                     ResultSetMetaData metaData = tableResultSet.getMetaData();
                     int columnCount = metaData.getColumnCount();
@@ -228,7 +177,7 @@ public class OracleDatabase {
                         continue;
                     }
 
-                    // Write column names
+                    // Write column headers
                     for (int i = 1; i <= columnCount; i++) {
                         writer.write(metaData.getColumnName(i) + (i < columnCount ? "," : "\n"));
                     }
@@ -270,19 +219,17 @@ public class OracleDatabase {
     public void appendSchemaToCSV(String schema, String filePath) throws SQLException, IOException {
         File file = new File(filePath);
 
-        // Create the file if it doesn't exist
+        // Check if the file exists; if not, create it
         if (!file.exists()) {
             file.createNewFile();
         }
 
-        String fetchTablesQuery = "SELECT table_name FROM all_tables WHERE owner = '" + schema + "'";
+        String fetchTablesQuery = "SELECT TABLE_NAME FROM INFORMATION_SCHEMA.TABLES WHERE TABLE_SCHEMA = '" + schema + "'";
         try (ResultSet tablesResultSet = fetchResults(fetchTablesQuery);
              FileWriter writer = new FileWriter(file, true)) { // Open file in append mode
 
-            boolean dataWritten = false;
-
             while (tablesResultSet.next()) {
-                String tableName = tablesResultSet.getString("table_name");
+                String tableName = tablesResultSet.getString("TABLE_NAME");
 
                 // Write table separator
                 writer.write("--------------\n");
@@ -290,13 +237,10 @@ public class OracleDatabase {
 
                 // Fetch primary key columns
                 String fetchPKQuery =
-                        "SELECT cols.column_name " +
-                                "FROM all_constraints cons " +
-                                "JOIN all_cons_columns cols ON cons.constraint_name = cols.constraint_name " +
-                                "AND cons.owner = cols.owner " +
-                                "WHERE cons.constraint_type = 'P' " +
-                                "AND cons.owner = '" + schema + "' " +
-                                "AND cons.table_name = '" + tableName + "'";
+                        "SELECT COLUMN_NAME " +
+                                "FROM INFORMATION_SCHEMA.KEY_COLUMN_USAGE " +
+                                "WHERE TABLE_SCHEMA = '" + schema + "' " +
+                                "AND TABLE_NAME = '" + tableName + "'";
 
                 StringBuilder primaryKeyColumns = new StringBuilder();
                 try (ResultSet pkResultSet = fetchResults(fetchPKQuery)) {
@@ -316,17 +260,16 @@ public class OracleDatabase {
 
                 // Fetch column metadata
                 String fetchColumnsQuery =
-                        "SELECT column_name, data_type, data_length, nullable " +
-                                "FROM all_tab_columns " +
-                                "WHERE owner = '" + schema + "' " +
-                                "AND table_name = '" + tableName + "'";
+                        "SELECT COLUMN_NAME, DATA_TYPE, CHARACTER_MAXIMUM_LENGTH, IS_NULLABLE " +
+                                "FROM INFORMATION_SCHEMA.COLUMNS " +
+                                "WHERE TABLE_SCHEMA = '" + schema + "' AND TABLE_NAME = '" + tableName + "'";
 
                 try (ResultSet columnsResultSet = fetchResults(fetchColumnsQuery)) {
                     while (columnsResultSet.next()) {
-                        String columnName = columnsResultSet.getString("column_name");
-                        String dataType = columnsResultSet.getString("data_type");
-                        String length = columnsResultSet.getString("data_length");
-                        String allowDBNull = "Y".equals(columnsResultSet.getString("nullable")) ? "True" : "False";
+                        String columnName = columnsResultSet.getString("COLUMN_NAME");
+                        String dataType = columnsResultSet.getString("DATA_TYPE");
+                        String length = columnsResultSet.getString("CHARACTER_MAXIMUM_LENGTH");
+                        String allowDBNull = "YES".equals(columnsResultSet.getString("IS_NULLABLE")) ? "True" : "False";
 
                         writer.write("Column: " + columnName + ", Type: " + dataType +
                                 (length != null ? ", Length: " + length : "") +
@@ -336,7 +279,7 @@ public class OracleDatabase {
                 }
 
                 // Fetch table data
-                String fetchTableDataQuery = "SELECT * FROM \"" + schema + "\".\"" + tableName + "\"";
+                String fetchTableDataQuery = "SELECT * FROM [" + schema + "].[" + tableName + "]";
                 try (ResultSet tableResultSet = fetchResults(fetchTableDataQuery)) {
                     ResultSetMetaData metaData = tableResultSet.getMetaData();
                     int columnCount = metaData.getColumnCount();
@@ -358,15 +301,9 @@ public class OracleDatabase {
                             writer.write((value != null ? value : "NULL") + (i < columnCount ? "," : "\n"));
                         }
                     }
-
-                    dataWritten = true;
                 }
 
                 writer.write("\n"); // Blank line after table data
-            }
-
-            if (!dataWritten) {
-                writer.write("No data found in schema: \"" + schema + "\"\n");
             }
 
         } catch (SQLException | IOException e) {
@@ -379,6 +316,7 @@ public class OracleDatabase {
 
     /**
      * Closes the database connection.
+     *
      * @throws SQLException if a database access error occurs
      */
     public void closeConnection() throws SQLException {
@@ -387,5 +325,5 @@ public class OracleDatabase {
             System.out.println("Database connection closed.");
         }
     }
-
 }
+

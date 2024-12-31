@@ -60,6 +60,7 @@ public class DesignerPage {
     public void enterManageEndpoints() {
         WebElement manageEndpoints = driver.findElement(By.xpath("//span[text()='Manage Endpoint Connections...']"));
         safeClick(manageEndpoints);
+        wait.until(ExpectedConditions.visibilityOfElementLocated(By.xpath("//*[text()=\"Manage Endpoint Connections\"]")));
     }
 
     /** Enter to 'Table Selection' window - where schemas and tables will be selected for the replication task. */
@@ -109,8 +110,10 @@ public class DesignerPage {
     public void startTaskWait() {
         try {
             wait.until(ExpectedConditions.visibilityOfElementLocated(By.xpath("//*[text()='Starting task']")));
+            wait.until(ExpectedConditions.visibilityOfElementLocated(By.xpath("//*[text()='Starting']")));
             System.out.println("Starting task");
-            wait.until(ExpectedConditions.invisibilityOfElementLocated(By.xpath("//*[text()='Starting task']")));
+            wait.until(ExpectedConditions.visibilityOfElementLocated(By.xpath("//*[text()='Running']")));
+            wait.until(ExpectedConditions.invisibilityOfElementLocated(By.xpath("//*[text()='Running']")));
             System.out.println("Task started");
         } catch (Exception e) {
             System.out.println("Element did not become visible within the timeout or became stale.");

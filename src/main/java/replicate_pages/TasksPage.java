@@ -4,6 +4,11 @@ import org.openqa.selenium.By;
 import org.openqa.selenium.WebDriver;
 import org.openqa.selenium.WebElement;
 import org.openqa.selenium.interactions.Actions;
+import org.openqa.selenium.support.ui.ExpectedConditions;
+import org.openqa.selenium.support.ui.WebDriverWait;
+
+import java.time.Duration;
+
 import static utilities.UtilitiesMethods.safeClick;
 
 /**
@@ -15,6 +20,8 @@ public class TasksPage {
 
     private WebDriver driver;
     private Actions actions;
+    private WebDriverWait wait;
+
 
     /**
      * Constructor to initialize the TasksPage object.
@@ -24,6 +31,7 @@ public class TasksPage {
     public TasksPage(WebDriver driver) {
         this.driver = driver;
         this.actions = new Actions(driver);
+        this.wait = new WebDriverWait(driver, Duration.ofSeconds(10));
     }
 
     /**
@@ -40,6 +48,7 @@ public class TasksPage {
     public void enterManageEndpoints() {
         WebElement manageEndpoints = driver.findElement(By.xpath("//span[text()='Manage Endpoint Connections...']"));
         safeClick(manageEndpoints);
+        wait.until(ExpectedConditions.visibilityOfElementLocated(By.xpath("//*[text()=\"Manage Endpoint Connections\"]")));
     }
 
     /**
@@ -100,6 +109,7 @@ public class TasksPage {
         safeClick(deleteTaskButton);
         WebElement okButton = driver.findElement(By.xpath("//button[text()='OK']"));
         safeClick(okButton);
+        System.out.println("Deleted task: " + taskName);
     }
 
     /**
