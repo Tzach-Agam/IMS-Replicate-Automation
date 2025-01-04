@@ -1,0 +1,13 @@
+--------------
+Table: "HOSPITAL"
+Primary Key: HOSPNAME, HOSPNAME
+Column: HOSPNAME, Type: nvarchar, Length: 20, AllowDBNull: False
+Column: HOSP_ADDRESS, Type: nvarchar, Length: 30, AllowDBNull: False
+Column: HOSP_PHONE, Type: nvarchar, Length: 10, AllowDBNull: False
+Column: ADMIN, Type: nvarchar, Length: 20, AllowDBNull: False
+
+HOSPNAME,HOSP_ADDRESS,HOSP_PHONE,ADMIN
+Beilinson,Kaplan st. Petah-Tikva,02-5632321,Mrs. Lonel
+Ichilov,Weitzman St. Tel-Aviv,03-3030303,Prof. Gamzu
+Soroka,Beer-Sheva,08-8080808,Dr. Admino
+

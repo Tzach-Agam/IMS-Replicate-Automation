@@ -1,13 +1,13 @@
 --------------
 Table: "HOSPITAL"
 Primary Key: HOSPNAME
-Column: HOSPNAME, Type: NVARCHAR2, AllowDBNull: False
-Column: HOSP_ADDRESS, Type: NVARCHAR2, AllowDBNull: False
-Column: HOSP_PHONE, Type: NVARCHAR2, AllowDBNull: False
-Column: ADMIN, Type: NVARCHAR2, AllowDBNull: False
+Column: HOSPNAME, Type: NVARCHAR2, Length: 20, AllowDBNull: False
+Column: HOSP_ADDRESS, Type: NVARCHAR2, Length: 30, AllowDBNull: False
+Column: HOSP_PHONE, Type: NVARCHAR2, Length: 10, AllowDBNull: False
+Column: ADMIN, Type: NVARCHAR2, Length: 20, AllowDBNull: False
 
 HOSPNAME,HOSP_ADDRESS,HOSP_PHONE,ADMIN
-Ichilov,Weitzman St. Tel-Aviv,03-3030303,Prof. GamzT
-Soroka,Beer-Sheva,08-8080808,Dr. AdminT
-Beilinson,Kaplan st. Petah-Tikva,02-5632321,Mrs. LoneT
+Ichilov,Weitzman St. Tel-Aviv,03-3030303,Prof. Gamzu
+Soroka,Beer-Sheva,08-8080808,Dr. Admino
+Beilinson,Kaplan st. Petah-Tikva,02-5632321,Mrs. Lonel
 

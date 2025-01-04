@@ -100,7 +100,9 @@ public class MonitorPage {
                     "//*[@id='Monitoring_FL_CompletedTables']/div/div[3]/*[text()='" + numberOfTables + "']")));
             System.out.println("Full Load completed.");
         } catch (Exception e) {
-            System.out.println("Full Load did not complete within the timeout.");
+            String errorMessage = "Full Load did not complete within the timeout. Expected tables: " + numberOfTables;
+            System.err.println(errorMessage);
+            throw new AssertionError(errorMessage, e);
         }
     }
 

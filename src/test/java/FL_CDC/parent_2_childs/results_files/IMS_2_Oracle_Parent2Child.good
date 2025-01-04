@@ -1,0 +1,42 @@
+--------------
+Table: "FACILITY"
+Primary Key: HOSPNAME
+Column: HOSPNAME, Type: NVARCHAR2, Length: 20, AllowDBNull: False
+Column: FACTYPE, Type: NVARCHAR2, Length: 20, AllowDBNull: False
+Column: TOT_FACIL, Type: NVARCHAR2, Length: 3, AllowDBNull: False
+Column: FACAVAIL, Type: NVARCHAR2, Length: 3, AllowDBNull: False
+
+HOSPNAME,FACTYPE,TOT_FACIL,FACAVAIL
+Ichilov,Rehabilitation,4,2
+Soroka,Surgical Facilities,4,2
+Beilinson,Rehabilitation,4,2
+
+--------------
+Table: "HOSPITAL"
+Primary Key: HOSPNAME
+Column: HOSPNAME, Type: NVARCHAR2, Length: 20, AllowDBNull: False
+Column: HOSP_ADDRESS, Type: NVARCHAR2, Length: 30, AllowDBNull: False
+Column: HOSP_PHONE, Type: NVARCHAR2, Length: 10, AllowDBNull: False
+Column: ADMIN, Type: NVARCHAR2, Length: 20, AllowDBNull: False
+
+HOSPNAME,HOSP_ADDRESS,HOSP_PHONE,ADMIN
+Ichilov,Weitzman St. Tel-Aviv,03-3030303,Prof. Gamzu
+Soroka,Beer-Sheva,08-8080808,Dr. Admino
+Beilinson,Kaplan st. Petah-Tikva,02-5632321,Mrs. Lonel
+
+--------------
+Table: "WARD"
+Primary Key: HOSPNAME, WARDNO
+Column: HOSPNAME, Type: NVARCHAR2, Length: 20, AllowDBNull: False
+Column: WARDNO, Type: NVARCHAR2, Length: 2, AllowDBNull: False
+Column: TOT_ROOMS, Type: NVARCHAR2, Length: 3, AllowDBNull: False
+Column: TOT_BEDS, Type: NVARCHAR2, Length: 3, AllowDBNull: False
+Column: BEDAVAIL, Type: NVARCHAR2, Length: 3, AllowDBNull: False
+Column: WARDTYPE, Type: NVARCHAR2, Length: 20, AllowDBNull: False
+
+HOSPNAME,WARDNO,TOT_ROOMS,TOT_BEDS,BEDAVAIL,WARDTYPE
+Soroka,1,15,30,12,Isolation Ward
+Soroka,2,15,30,2,Intensive Care Unit
+Soroka,3,14,30,8,Surgical Ward
+Soroka,4,13,30,19,Maternity Ward
+

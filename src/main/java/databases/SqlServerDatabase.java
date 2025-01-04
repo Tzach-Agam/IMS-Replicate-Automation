@@ -15,7 +15,6 @@ public class SqlServerDatabase {
     private Connection connection;
 
     public SqlServerDatabase(ConfigurationManager configFile) throws IOException {
-        //config = new ConfigurationManager("src/main/resources/config.ini");
         config = configFile;
         DB_URL = "jdbc:sqlserver://" + config.getMSSQLServer() + ";databaseName=" + config.getMSSQLDatabase() +";encrypt=true;TrustServerCertificate=true";
         USER = "sa"; // Default SQL Server admin user
@@ -24,7 +23,6 @@ public class SqlServerDatabase {
 
     /**
      * Establishes a connection to the SQL Server database.
-     *
      * @throws SQLException if a database access error occurs
      */
     public void connect() throws SQLException {
@@ -36,20 +34,17 @@ public class SqlServerDatabase {
 
     /**
      * Executes a query (INSERT, UPDATE, DELETE, etc.) on the SQL Server database.
-     *
      * @param query The SQL query to execute
      * @throws SQLException if a database access error occurs
      */
     public void executeQuery(String query) throws SQLException {
         try (Statement statement = connection.createStatement()) {
             statement.execute(query);
-            System.out.println("Query has been executed");
         }
     }
 
     /**
      * Executes a SELECT query and fetches the result set.
-     *
      * @param query The SQL SELECT query to execute
      * @return The ResultSet object containing query results
      * @throws SQLException if a database access error occurs
@@ -57,6 +52,29 @@ public class SqlServerDatabase {
     public ResultSet fetchResults(String query) throws SQLException {
         Statement statement = connection.createStatement();
         return statement.executeQuery(query);
+    }
+
+    /**
+     * Checks if the specified schema exists in the database.
+     * This method queries the sys.schemas view to determine if the schema exists in the SQL Server database.
+     * If the schema does not exist, it returns true; otherwise, it returns false.
+     * @param schema The name of the schema to check for existence.
+     * @return true if the schema does not exist, false otherwise.
+     * @throws SQLException if a database access error occurs during the check.
+     */
+    public boolean doesSchemaNotExist(String schema) throws SQLException {
+        String checkSchemaQuery = "SELECT 1 FROM sys.schemas WHERE name = ?";
+
+        try (PreparedStatement preparedStatement = connection.prepareStatement(checkSchemaQuery)) {
+            preparedStatement.setString(1, schema);
+
+            try (ResultSet resultSet = preparedStatement.executeQuery()) {
+                return !resultSet.next(); // Return true if no result is found
+            }
+        } catch (SQLException e) {
+            System.err.println("Error checking if schema exists: " + e.getMessage());
+            throw e; // Rethrow exception to let the caller handle it
+        }
     }
 
     public void createSchema(String schemaName) {
@@ -69,33 +87,54 @@ public class SqlServerDatabase {
         }
     }
 
+    /**
+     * Drops the specified schema from the SQL Server database if it exists.
+     * This method uses the SQL Server 'DROP SCHEMA IF EXISTS' feature.
+     * @param schemaName The name of the schema to be dropped.
+     */
     public void dropSchema(String schemaName) {
-        String createSchemaQuery = "DROP SCHEMA " + schemaName;
+        // Query to drop the schema if it exists in the database
+        String dropSchemaQuery = "DROP SCHEMA IF EXISTS " + schemaName;
         try {
-            executeQuery(createSchemaQuery);
+            // Execute the drop schema query
+            executeQuery(dropSchemaQuery);
             System.out.println("Schema " + schemaName + " dropped");
+
         } catch (SQLException e) {
+            // Handle any SQL exceptions that might occur
+            System.err.println("Error dropping schema: " + e.getMessage());
             throw new RuntimeException(e);
         }
     }
 
     /**
-     * Drops all tables in the specified schema/user.
-     *
+     * Drops all tables in the specified schema/user if the schema exists.
      * @param schema The schema/user whose tables should be dropped
      * @throws SQLException if a database access error occurs
      */
     public void dropAllTables(String schema) throws SQLException {
-        String fetchTablesQuery = "SELECT TABLE_NAME FROM INFORMATION_SCHEMA.TABLES WHERE TABLE_SCHEMA = '" + schema + "'";
-        try (ResultSet resultSet = fetchResults(fetchTablesQuery)) {
-            while (resultSet.next()) {
-                String tableName = resultSet.getString("TABLE_NAME");
-                String dropTableQuery = "DROP TABLE [" + schema + "].[" + tableName + "]";
-                executeQuery(dropTableQuery);
-                System.out.println("Dropped table: " + tableName);
+        // Check if the schema exists using the doesUserNotExist method
+        if (doesSchemaNotExist(schema)) {
+            // If the schema does not exist, print a message and exit the method
+            System.out.println("Schema " + schema + " does not exist.");
+            return;
+        }
+        // Fetch all tables in the schema and drop them
+        String fetchTablesQuery = "SELECT TABLE_NAME FROM INFORMATION_SCHEMA.TABLES WHERE TABLE_SCHEMA = ?";
+        try (PreparedStatement fetchStmt = connection.prepareStatement(fetchTablesQuery)) {
+            fetchStmt.setString(1, schema);
+
+            try (ResultSet resultSet = fetchStmt.executeQuery()) {
+                while (resultSet.next()) {
+                    String tableName = resultSet.getString("TABLE_NAME");
+                    String dropTableQuery = "DROP TABLE [" + schema + "].[" + tableName + "]";
+                    executeQuery(dropTableQuery);
+                    System.out.println("Dropped table: " + tableName);
+                }
             }
         }
     }
+
 
     /**
      * Creates a CSV file containing metadata and data for all tables in the specified schema.
@@ -245,14 +284,14 @@ public class SqlServerDatabase {
                 StringBuilder primaryKeyColumns = new StringBuilder();
                 try (ResultSet pkResultSet = fetchResults(fetchPKQuery)) {
                     while (pkResultSet.next()) {
-                        if (primaryKeyColumns.length() > 0) {
+                        if (!primaryKeyColumns.isEmpty()) {
                             primaryKeyColumns.append(", ");
                         }
                         primaryKeyColumns.append(pkResultSet.getString("COLUMN_NAME"));
                     }
                 }
 
-                if (primaryKeyColumns.length() > 0) {
+                if (!primaryKeyColumns.isEmpty()) {
                     writer.write("Primary Key: " + primaryKeyColumns.toString() + "\n");
                 } else {
                     writer.write("Primary Key: None\n");

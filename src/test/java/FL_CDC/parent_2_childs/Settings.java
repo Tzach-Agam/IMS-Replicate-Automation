@@ -1,4 +1,4 @@
-package FL_CDC.parent_only;
+package FL_CDC.parent_2_childs;
 import general.General;
 import org.testng.annotations.AfterMethod;
 import org.testng.annotations.BeforeMethod;
@@ -33,12 +33,11 @@ public class Settings extends General {
         TaskName = this.newTaskPage.randomTaskName(thisTaskName);
         this.tasksGeneralPage.createNewTask();
         this.newTaskPage.newTaskCreation(TaskName, "task");
-        this.commonMethods.taskDataLoader();
         this.designerPage.chooseSourceTarget(IMSEndpointName, OracleEndpointName);
         //this.designerPage.chooseSourceTarget(IMSEndpointName, SQLEndpointName);
         this.designerPage.confirmIMS();
         this.designerPage.enterTableSelection();
-        this.tableSelection.selectChosenTables("HOSPITAL");
+        this.tableSelection.selectChosenTables("HOSPITAL", "WARD", "FACILITY");
         this.designerPage.enterTaskSettings();
         this.taskSettingsPage.setTaskSettingsGeneral(config.getTargetSchema(), config.getControlSchema());
         this.taskSettingsPage.okButton();

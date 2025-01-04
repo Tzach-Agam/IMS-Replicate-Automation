@@ -140,6 +140,16 @@ public class ManageEndpointsPage {
         imsDataSource.sendKeys(datasource);
     }
 
+    public void chooseIMSCDCAdapter(String cdcAdapter){
+        WebElement imsDataSource = driver.findElement(By.xpath("//*[@id=\"cdcAdapter\"]"));
+        imsDataSource.sendKeys(cdcAdapter);
+    }
+
+    public void chooseIMSCDCWorkspace(String cdcWorkspace){
+        WebElement imsDataSource = driver.findElement(By.xpath("//*[@id=\"cdcWorkspace\"]"));
+        imsDataSource.sendKeys(cdcWorkspace);
+    }
+
 
     /**
      * Create an IMS IBM source endpoint with config.ini parameters
@@ -161,6 +171,10 @@ public class ManageEndpointsPage {
         imsWorksapce.sendKeys(config.getIMSWorkspace());
         WebElement imsDataSource = driver.findElement(By.xpath("//*[@id=\"arcDatasource\"]"));
         imsDataSource.sendKeys(config.getIMSDataSource());
+        //WebElement imsCDCAdapter = driver.findElement(By.xpath("//*[@id=\"cdcAdapter\"]"));
+        //imsCDCAdapter.sendKeys(config.getIMSCDCAdapter());
+        //WebElement imsCDCWorkspace = driver.findElement(By.xpath("//*[@id=\"cdcWorkspace\"]"));
+        //imsCDCWorkspace.sendKeys(config.getIMSCDCWorkspace());
         Thread.sleep(200);
         testConnectionValid();
         save();
@@ -169,7 +183,7 @@ public class ManageEndpointsPage {
     /**
      * Create an IMS endpoint with user custom parameters
      */
-    public void createIMSsource2(String endpointName,String description, String type, String server, String port, String username, String password, String solution, String workspace, String datasource ) throws InterruptedException {
+    public void createIMSsource2(String endpointName,String description, String type, String server, String port, String username, String password, String solution, String workspace, String datasource, String cdcAdapter, String cdcWorkspace ) throws InterruptedException {
         newEndpointConnection();
         enterEndpointName(endpointName);
         enterEndpointDescription(description);
@@ -181,6 +195,8 @@ public class ManageEndpointsPage {
         chooseIMSSolution(solution);
         chooseIMSWorkspace(workspace);
         chooseIMSDataSource(datasource);
+        chooseIMSCDCAdapter(cdcAdapter);
+        chooseIMSCDCWorkspace(cdcWorkspace);
         Thread.sleep(200);
     }
 

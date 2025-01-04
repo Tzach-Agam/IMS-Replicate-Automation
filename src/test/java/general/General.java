@@ -43,10 +43,9 @@ public class General {
     protected void TearDown() throws InterruptedException, SQLException {
         imsDB.logout();
         oracleDB.closeConnection();
+        //sqlDB.closeConnection();
         deleteTaskEndpoint();
-        if (driver != null) {
-            driver.quit();
-        }
+        driver.quit();
     }
 
     protected void initializeWebObjects() throws IOException {
@@ -78,6 +77,12 @@ public class General {
         oracleDB.dropUser(controlSchema);
         oracleDB.createUser(targetSchema);
         oracleDB.createUser(controlSchema);
+//        sqlDB.dropAllTables(targetSchema);
+//        sqlDB.dropAllTables(controlSchema);
+//        sqlDB.dropSchema(targetSchema);
+//        sqlDB.dropSchema(controlSchema);
+//        sqlDB.createSchema(targetSchema);
+//        sqlDB.createSchema(controlSchema);
     }
 
     protected void initializeWebDriver() {

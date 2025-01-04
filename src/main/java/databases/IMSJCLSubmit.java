@@ -32,7 +32,7 @@ public class IMSJCLSubmit {
         this.port = 21;
         this.user = config.getIMSUsername();
         this.pass = config.getIMSPassword();
-        this.psb = config.getIMSpsb();
+        this.psb = config.getIMSPsb();
         this.ftpClient = new FTPClient();
     }
 

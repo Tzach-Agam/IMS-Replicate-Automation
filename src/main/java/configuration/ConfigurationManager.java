@@ -101,7 +101,15 @@ public class ConfigurationManager {
         return ini.get("IMS_DB", "dataSource");
     }
 
-    public String getIMSpsb() {
+    public String getIMSCDCAdapter() {
+        return ini.get("IMS_DB", "cdcAdapter");
+    }
+
+    public String getIMSCDCWorkspace() {
+        return ini.get("IMS_DB", "cdcWorkspace");
+    }
+
+    public String getIMSPsb() {
         return ini.get("IMS_DB", "psb");
     }
 

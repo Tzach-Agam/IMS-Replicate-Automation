@@ -112,13 +112,13 @@ public class TableSelection {
         this.okButtonClick();
     }
 
-    /** Selects the specified tables for replication. This method searches for the provided table names, clicks on each
+    /**
+     * Selects the specified tables for replication. This method searches for the provided table names, clicks on each
      * matching table element, and confirms the selection for replication. It assumes that the necessary web elements
      * for table search and selection are available in the UI.
-     *
-     * @param tables An array of table names to be selected for replication.
+     * @param tables Table names to be selected for replication.
      */
-    public void selectChosenTables(String[] tables) {
+    public void selectChosenTables(String... tables) {
         searchForTables();
         for (String table : tables) {
             WebElement chosenTable = driver.findElement(By.xpath("//*[text()='" + table + "']"));
@@ -126,7 +126,6 @@ public class TableSelection {
             selectOneTable();
         }
         okButtonClick();
-
     }
 }
 

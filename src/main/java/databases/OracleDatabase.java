@@ -152,10 +152,10 @@ public class OracleDatabase {
     /**
      * Creates a CSV file containing metadata and data for all tables in the specified schema.
      *
-     * @param schema The schema/user whose tables should be exported
-     * @param filePath The path of the CSV file to create
-     * @throws SQLException if a database access error occurs
-     * @throws IOException if a file access error occurs
+     * @param schema   The schema/user whose tables should be exported.
+     * @param filePath The path of the CSV file to create.
+     * @throws SQLException if a database access error occurs.
+     * @throws IOException  if a file access error occurs.
      */
     public void exportSchemaToCSV(String schema, String filePath) throws SQLException, IOException {
         String fetchTablesQuery = "SELECT table_name FROM all_tables WHERE owner = '" + schema + "'";
@@ -163,6 +163,7 @@ public class OracleDatabase {
              FileWriter writer = new FileWriter(filePath)) {
 
             boolean dataWritten = false;
+
             while (tablesResultSet.next()) {
                 String tableName = tablesResultSet.getString("table_name");
 
@@ -200,24 +201,27 @@ public class OracleDatabase {
 
                 // Fetch column metadata
                 String fetchColumnsQuery =
-                        "SELECT column_name, data_type, data_length, nullable " +
+                        "SELECT column_name, data_type, CHAR_LENGTH AS data_length, nullable " +
                                 "FROM all_tab_columns " +
                                 "WHERE owner = '" + schema + "' " +
                                 "AND table_name = '" + tableName + "'";
+
                 try (ResultSet columnsResultSet = fetchResults(fetchColumnsQuery)) {
                     while (columnsResultSet.next()) {
                         String columnName = columnsResultSet.getString("column_name");
                         String dataType = columnsResultSet.getString("data_type");
                         String dataLength = columnsResultSet.getString("data_length");
                         String allowDBNull = "Y".equals(columnsResultSet.getString("nullable")) ? "True" : "False";
+
+                        String lengthInfo = dataLength != null ? (dataLength.equals("-1") ? "MAX" : dataLength) : "";
                         writer.write("Column: " + columnName + ", Type: " + dataType +
-                                ("VARCHAR2".equals(dataType) ? ", Length: " + dataLength : "") +
+                                (!lengthInfo.isEmpty() ? ", Length: " + lengthInfo : "") +
                                 ", AllowDBNull: " + allowDBNull + "\n");
                     }
                     writer.write("\n");
                 }
 
-                // Fetch data
+                // Fetch table data
                 String fetchTableDataQuery = "SELECT * FROM \"" + schema + "\".\"" + tableName + "\"";
                 try (ResultSet tableResultSet = fetchResults(fetchTableDataQuery)) {
                     ResultSetMetaData metaData = tableResultSet.getMetaData();
@@ -228,7 +232,7 @@ public class OracleDatabase {
                         continue;
                     }
 
-                    // Write column names
+                    // Write column headers
                     for (int i = 1; i <= columnCount; i++) {
                         writer.write(metaData.getColumnName(i) + (i < columnCount ? "," : "\n"));
                     }
@@ -258,6 +262,7 @@ public class OracleDatabase {
 
         System.out.println("Schema exported to CSV file: " + filePath);
     }
+
 
     /**
      * Appends metadata and data for all tables in the specified schema to an existing CSV file.
@@ -301,14 +306,14 @@ public class OracleDatabase {
                 StringBuilder primaryKeyColumns = new StringBuilder();
                 try (ResultSet pkResultSet = fetchResults(fetchPKQuery)) {
                     while (pkResultSet.next()) {
-                        if (primaryKeyColumns.length() > 0) {
+                        if (!primaryKeyColumns.isEmpty()) {
                             primaryKeyColumns.append(", ");
                         }
                         primaryKeyColumns.append(pkResultSet.getString("COLUMN_NAME"));
                     }
                 }
 
-                if (primaryKeyColumns.length() > 0) {
+                if (!primaryKeyColumns.isEmpty()) {
                     writer.write("Primary Key: " + primaryKeyColumns.toString() + "\n");
                 } else {
                     writer.write("Primary Key: None\n");
@@ -316,7 +321,7 @@ public class OracleDatabase {
 
                 // Fetch column metadata
                 String fetchColumnsQuery =
-                        "SELECT column_name, data_type, data_length, nullable " +
+                        "SELECT column_name, data_type, CHAR_LENGTH AS data_length, nullable " +
                                 "FROM all_tab_columns " +
                                 "WHERE owner = '" + schema + "' " +
                                 "AND table_name = '" + tableName + "'";
@@ -325,11 +330,12 @@ public class OracleDatabase {
                     while (columnsResultSet.next()) {
                         String columnName = columnsResultSet.getString("column_name");
                         String dataType = columnsResultSet.getString("data_type");
-                        String length = columnsResultSet.getString("data_length");
+                        String dataLength = columnsResultSet.getString("data_length");
                         String allowDBNull = "Y".equals(columnsResultSet.getString("nullable")) ? "True" : "False";
 
+                        String lengthInfo = dataLength != null ? (dataLength.equals("-1") ? "MAX" : dataLength) : "";
                         writer.write("Column: " + columnName + ", Type: " + dataType +
-                                (length != null ? ", Length: " + length : "") +
+                                (!lengthInfo.isEmpty() ? ", Length: " + lengthInfo : "") +
                                 ", AllowDBNull: " + allowDBNull + "\n");
                     }
                     writer.write("\n");
@@ -388,4 +394,12 @@ public class OracleDatabase {
         }
     }
 
+    public static void main(String args[]) throws IOException, SQLException {
+        ConfigurationManager config = new ConfigurationManager("src/main/resources/config.ini");
+        OracleDatabase oracledb = new OracleDatabase(config);
+        oracledb.connect();
+        oracledb.appendSchemaToCSV("replicate_selenium_target", "export.csv");
+        oracledb.appendSchemaToCSV("replicate_selenium_control", "export.csv");
+        oracledb.closeConnection();
+    }
 }
