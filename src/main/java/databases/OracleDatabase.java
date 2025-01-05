@@ -393,13 +393,4 @@ public class OracleDatabase {
             System.out.println("Database connection closed.");
         }
     }
-
-    public static void main(String args[]) throws IOException, SQLException {
-        ConfigurationManager config = new ConfigurationManager("src/main/resources/config.ini");
-        OracleDatabase oracledb = new OracleDatabase(config);
-        oracledb.connect();
-        oracledb.appendSchemaToCSV("replicate_selenium_target", "export.csv");
-        oracledb.appendSchemaToCSV("replicate_selenium_control", "export.csv");
-        oracledb.closeConnection();
-    }
 }
