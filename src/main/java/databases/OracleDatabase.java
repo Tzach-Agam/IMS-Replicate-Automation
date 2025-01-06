@@ -158,7 +158,7 @@ public class OracleDatabase {
      * @throws IOException  if a file access error occurs.
      */
     public void exportSchemaToCSV(String schema, String filePath) throws SQLException, IOException {
-        String fetchTablesQuery = "SELECT table_name FROM all_tables WHERE owner = '" + schema + "'";
+        String fetchTablesQuery = "SELECT table_name FROM all_tables WHERE owner = '" + schema + "' ORDER BY table_name";
         try (ResultSet tablesResultSet = fetchResults(fetchTablesQuery);
              FileWriter writer = new FileWriter(filePath)) {
 
@@ -280,7 +280,7 @@ public class OracleDatabase {
             file.createNewFile();
         }
 
-        String fetchTablesQuery = "SELECT table_name FROM all_tables WHERE owner = '" + schema + "'";
+        String fetchTablesQuery = "SELECT table_name FROM all_tables WHERE owner = '" + schema + "' ORDER BY table_name";
         try (ResultSet tablesResultSet = fetchResults(fetchTablesQuery);
              FileWriter writer = new FileWriter(file, true)) { // Open file in append mode
 

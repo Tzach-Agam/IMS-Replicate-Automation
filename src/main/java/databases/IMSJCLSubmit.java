@@ -37,6 +37,19 @@ public class IMSJCLSubmit {
     }
 
     /**
+     * Initialize the IMSJCLSubmit instance with a different constructor.
+     * For a different IMS database.
+     */
+    public IMSJCLSubmit(String server, String username, String password, String psb) {
+        this.server = server;
+        this.port = 21;
+        this.user = username;
+        this.pass = password;
+        this.psb = psb;
+        this.ftpClient = new FTPClient();
+    }
+
+    /**
      * Log in to the FTP server using the credentials provided in the configuration.
      */
     public void login() {

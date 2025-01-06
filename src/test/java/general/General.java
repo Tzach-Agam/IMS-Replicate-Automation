@@ -23,7 +23,7 @@ public class General {
     protected TableSelection tableSelection;
     protected TaskSettingsPage taskSettingsPage;
     protected MonitorPage monitorPage;
-    protected String TaskName;
+    public String TaskName;
     protected String IMSEndpointName;
     protected String OracleEndpointName;
     protected String SQLEndpointName;
@@ -43,7 +43,7 @@ public class General {
     protected void TearDown() throws InterruptedException, SQLException {
         imsDB.logout();
         oracleDB.closeConnection();
-        //sqlDB.closeConnection();
+        ///sqlDB.closeConnection();
         deleteTaskEndpoint();
         driver.quit();
     }
@@ -65,10 +65,10 @@ public class General {
     protected void initializeDatabases() throws SQLException, IOException {
         this.imsDB = new IMSJCLSubmit(config);
         this.oracleDB = new OracleDatabase(config);
-        //this.sqlDB = new SqlServerDatabase(config);
+        this.sqlDB = new SqlServerDatabase(config);
         imsDB.login();
         oracleDB.connect();
-        //sqlDB.connect();
+        ///sqlDB.connect();
         targetSchema = config.getTargetSchema();
         controlSchema = config.getControlSchema();
         oracleDB.dropAllTables(targetSchema);
@@ -77,12 +77,12 @@ public class General {
         oracleDB.dropUser(controlSchema);
         oracleDB.createUser(targetSchema);
         oracleDB.createUser(controlSchema);
-//        sqlDB.dropAllTables(targetSchema);
-//        sqlDB.dropAllTables(controlSchema);
-//        sqlDB.dropSchema(targetSchema);
-//        sqlDB.dropSchema(controlSchema);
-//        sqlDB.createSchema(targetSchema);
-//        sqlDB.createSchema(controlSchema);
+        ///sqlDB.dropAllTables(targetSchema);
+        ///sqlDB.dropAllTables(controlSchema);
+        ///sqlDB.dropSchema(targetSchema);
+        ///sqlDB.dropSchema(controlSchema);
+        ///sqlDB.createSchema(targetSchema);
+        ///sqlDB.createSchema(controlSchema);
     }
 
     protected void initializeWebDriver() {
@@ -92,13 +92,13 @@ public class General {
         this.commonMethods.loaderIconOpeningReplicate();
     }
 
-    protected void deleteTaskEndpoint(){
+    protected void deleteTaskEndpoint() throws InterruptedException {
         commonMethods.navigateToMainPage("tasks");
         tasksGeneralPage.deleteTask(TaskName);
         tasksGeneralPage.enterManageEndpoints();
         manageEndpoints.deleteEndpointByName(IMSEndpointName);
         manageEndpoints.deleteEndpointByName(OracleEndpointName);
-        //manageEndpoints.deleteEndpointByName(SQLEndpointName);
+        ///manageEndpoints.deleteEndpointByName(SQLEndpointName);
     }
 
 }

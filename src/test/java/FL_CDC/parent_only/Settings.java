@@ -20,11 +20,12 @@ public class Settings extends General {
      void endpointsCreation() throws InterruptedException {
         IMSEndpointName = this.manageEndpoints.randomEndpointName("IMS_Source");
         OracleEndpointName = this.manageEndpoints.randomEndpointName("OracleTarget");
-        //SQLEndpointName = this.manageEndpoints.randomEndpointName("SQL_Target");
+        ///SQLEndpointName = this.manageEndpoints.randomEndpointName("SQL_Target");
         this.tasksGeneralPage.enterManageEndpoints();
-        this.manageEndpoints.createIMSsource(IMSEndpointName);
+        this.manageEndpoints.createIMSsource3(IMSEndpointName, "Endpoint", "IMS", "zos5.qliktech.com", "5461", "VICTORK", "VICTORK", "", "HOSP62_BULK", "HOSP62", "HOSP62_ag", "HOSP62_ag");
+        ///this.manageEndpoints.createIMSsource(IMSEndpointName);
         this.manageEndpoints.createOracletarget(OracleEndpointName);
-        //this.manageEndpoints.createSQLServertarget(SQLEndpointName);
+        ///this.manageEndpoints.createSQLServertarget(SQLEndpointName);
         this.manageEndpoints.close();
     }
 
@@ -33,10 +34,9 @@ public class Settings extends General {
         TaskName = this.newTaskPage.randomTaskName(thisTaskName);
         this.tasksGeneralPage.createNewTask();
         this.newTaskPage.newTaskCreation(TaskName, "task");
-        this.commonMethods.taskDataLoader();
+        this.designerPage.waitForNewTask(TaskName);
         this.designerPage.chooseSourceTarget(IMSEndpointName, OracleEndpointName);
-        //this.designerPage.chooseSourceTarget(IMSEndpointName, SQLEndpointName);
-        this.designerPage.confirmIMS();
+        ///this.designerPage.chooseSourceTarget(IMSEndpointName, SQLEndpointName);
         this.designerPage.enterTableSelection();
         this.tableSelection.selectChosenTables("HOSPITAL");
         this.designerPage.enterTaskSettings();

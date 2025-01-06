@@ -145,7 +145,7 @@ public class SqlServerDatabase {
      * @throws IOException if a file access error occurs
      */
     public void exportSchemaToCSV(String schema, String filePath) throws SQLException, IOException {
-        String fetchTablesQuery = "SELECT TABLE_NAME FROM INFORMATION_SCHEMA.TABLES WHERE TABLE_SCHEMA = '" + schema + "'";
+        String fetchTablesQuery = "SELECT TABLE_NAME FROM INFORMATION_SCHEMA.TABLES WHERE TABLE_SCHEMA = '" + schema + "' ORDER BY TABLE_NAME";
         try (ResultSet tablesResultSet = fetchResults(fetchTablesQuery);
              FileWriter writer = new FileWriter(filePath)) {
 
@@ -263,7 +263,7 @@ public class SqlServerDatabase {
             file.createNewFile();
         }
 
-        String fetchTablesQuery = "SELECT TABLE_NAME FROM INFORMATION_SCHEMA.TABLES WHERE TABLE_SCHEMA = '" + schema + "'";
+        String fetchTablesQuery = "SELECT TABLE_NAME FROM INFORMATION_SCHEMA.TABLES WHERE TABLE_SCHEMA = '" + schema + "' ORDER BY TABLE_NAME";
         try (ResultSet tablesResultSet = fetchResults(fetchTablesQuery);
              FileWriter writer = new FileWriter(file, true)) { // Open file in append mode
 

@@ -1,0 +1,49 @@
+--------------
+Table: "HOSPITAL"
+Primary Key: HOSPNAME
+Column: HOSPNAME, Type: NVARCHAR2, Length: 20, AllowDBNull: False
+Column: HOSP_ADDRESS, Type: NVARCHAR2, Length: 30, AllowDBNull: False
+Column: HOSP_PHONE, Type: NVARCHAR2, Length: 10, AllowDBNull: False
+Column: ADMIN, Type: NVARCHAR2, Length: 20, AllowDBNull: False
+
+HOSPNAME,HOSP_ADDRESS,HOSP_PHONE,ADMIN
+Ichilov,Weitzman St. Tel-Aviv,03-3030303,Prof. Gamzu
+Soroka,Beer-Sheva,08-8080808,Dr. Admino
+Beilinson,Kaplan st. Petah-Tikva,02-5632321,Mrs. Lonel
+
+--------------
+Table: "PATIENT"
+Primary Key: HOSPNAME, WARDNO, BEDIDENT
+Column: HOSPNAME, Type: NVARCHAR2, Length: 20, AllowDBNull: False
+Column: WARDNO, Type: NVARCHAR2, Length: 2, AllowDBNull: False
+Column: PATNAME, Type: NVARCHAR2, Length: 20, AllowDBNull: False
+Column: PATADDRESS, Type: NVARCHAR2, Length: 30, AllowDBNull: False
+Column: PAT_PHONE, Type: NVARCHAR2, Length: 10, AllowDBNull: False
+Column: BEDIDENT, Type: NVARCHAR2, Length: 4, AllowDBNull: False
+Column: DATEADMT, Type: NVARCHAR2, Length: 6, AllowDBNull: False
+Column: PREV_STAY_FLAG, Type: NVARCHAR2, Length: 1, AllowDBNull: False
+Column: PREV_HOSP, Type: NVARCHAR2, Length: 20, AllowDBNull: False
+Column: PREV_DATE, Type: NVARCHAR2, Length: 4, AllowDBNull: False
+Column: PREV_REASON, Type: NVARCHAR2, Length: 30, AllowDBNull: False
+
+HOSPNAME,WARDNO,PATNAME,PATADDRESS,PAT_PHONE,BEDIDENT,DATEADMT,PREV_STAY_FLAG,PREV_HOSP,PREV_DATE,PREV_REASON
+Soroka,1,Sophia Brown,Dallas TX,033333333,1239,260722,Y,Baylor,0612,Neurology
+Soroka,1,Jane Austen,London UK,077777777,3456,011223,Y,Saint Mary,1122,Surgery
+Soroka,1,Liam Johnson,Miami FL,044444444,8765,051215,N,Cedars-Sinai,1224,Orthopedics
+
+--------------
+Table: "WARD"
+Primary Key: HOSPNAME, WARDNO
+Column: HOSPNAME, Type: NVARCHAR2, Length: 20, AllowDBNull: False
+Column: WARDNO, Type: NVARCHAR2, Length: 2, AllowDBNull: False
+Column: TOT_ROOMS, Type: NVARCHAR2, Length: 3, AllowDBNull: False
+Column: TOT_BEDS, Type: NVARCHAR2, Length: 3, AllowDBNull: False
+Column: BEDAVAIL, Type: NVARCHAR2, Length: 3, AllowDBNull: False
+Column: WARDTYPE, Type: NVARCHAR2, Length: 20, AllowDBNull: False
+
+HOSPNAME,WARDNO,TOT_ROOMS,TOT_BEDS,BEDAVAIL,WARDTYPE
+Soroka,1,15,30,12,Isolation Ward
+Soroka,2,15,30,2,Intensive Care Unit
+Soroka,3,14,30,8,Surgical Ward
+Soroka,4,13,30,19,Maternity Ward
+
