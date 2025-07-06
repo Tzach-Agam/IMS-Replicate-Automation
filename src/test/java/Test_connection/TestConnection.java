@@ -41,7 +41,7 @@ public class TestConnection extends General {
     @Test
     void validConnection() throws InterruptedException {
         manageEndpoints.createIMSsource2(endpointName, "IMS endpoint for tests",
-                "IMS", "zos5.qliktech.com", "5461", "VICTORK", "VICTORK", "", "HOSP62_BULK", "HOSP62", "HOSP62_ag", "HOSP62_ag");
+                "IMS", "zos5.qliktech.com", "5461", "VICTORK", "VICTORK","HOSP62_BULK", "HOSP62", "HOSP62_ag", "HOSP62_ag");
         manageEndpoints.testConnection();
         WebElement connectionMessage = wait.until(ExpectedConditions.visibilityOfElementLocated(By.xpath("//span[@class='ng-binding ng-scope']")));
         String messageText = connectionMessage.getText();
@@ -52,7 +52,7 @@ public class TestConnection extends General {
     @Test
     void emptyServer() throws InterruptedException {
         manageEndpoints.createIMSsource2(endpointName, "IMS endpoint for tests",
-                "IMS", "", "5461", "VICTORK", "VICTORK", "", "HOSP62_BULK", "HOSP62", "HOSP62_ag", "HOSP62_ag");
+                "IMS", "", "5461", "VICTORK", "VICTORK","HOSP62_BULK", "HOSP62", "HOSP62_ag", "HOSP62_ag");
         manageEndpoints.testConnection();
         WebElement connectionMessage = wait.until(ExpectedConditions.visibilityOfElementLocated(By.xpath("//span[@class='ng-binding ng-scope']")));
         String messageText = connectionMessage.getText();
@@ -63,7 +63,7 @@ public class TestConnection extends General {
     @Test
     void invalidServer() throws InterruptedException {
         manageEndpoints.createIMSsource2(endpointName, "IMS endpoint for tests",
-                "IMS", "asdasdas", "5461", "VICTORK", "VICTORK", "", "HOSP62_BULK", "HOSP62", "HOSP62_ag", "HOSP62_ag");
+                "IMS", "asdasdas", "5461", "VICTORK", "VICTORK", "HOSP62_BULK", "HOSP62", "HOSP62_ag", "HOSP62_ag");
         manageEndpoints.testConnection();
         WebElement connectionMessage = wait.until(ExpectedConditions.visibilityOfElementLocated(By.xpath("//span[@class='ng-binding ng-scope']")));
         String messageText = connectionMessage.getText();

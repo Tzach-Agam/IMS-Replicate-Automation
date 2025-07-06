@@ -44,7 +44,7 @@ public class General {
         imsDB.logout();
         oracleDB.closeConnection();
         ///sqlDB.closeConnection();
-        deleteTaskEndpoint();
+        ///deleteTaskEndpoint();
         driver.quit();
     }
 

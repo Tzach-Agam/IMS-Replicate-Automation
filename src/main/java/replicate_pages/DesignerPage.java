@@ -28,7 +28,15 @@ public class DesignerPage {
     public DesignerPage(WebDriver driver) {
         this.driver = driver;
         this.actions = new Actions(driver);
-        this.wait = new WebDriverWait(driver, Duration.ofSeconds(10));
+        this.wait = new WebDriverWait(driver, Duration.ofSeconds(30));
+    }
+
+    /** waits for task to appear in the designer page after it is created
+     * @param taskName The name of the task
+     */
+    public void waitForNewTask(String taskName){
+        wait.until(ExpectedConditions.visibilityOfElementLocated(By.xpath("//span[normalize-space()='" + taskName + "']")));
+        System.out.println(taskName + "Task created");
     }
 
     /** Choose source and target endpoints for a task by their names on the 'Endpoint Connections' list in Designer Mode.
@@ -51,6 +59,7 @@ public class DesignerPage {
     public void enterTaskSettings() {
         WebElement taskSettings = driver.findElement(By.xpath("//span[text()='Task Settings...']"));
         safeClick(taskSettings);
+        wait.until(ExpectedConditions.visibilityOfElementLocated(By.xpath("//span[@i18n='tasks.TaskSettings_Metadata']")));
     }
 
     /**
@@ -67,6 +76,7 @@ public class DesignerPage {
     public void enterTableSelection() {
         WebElement tableSelection = driver.findElement(By.xpath("//span[text()='Table Selection...']"));
         safeClick(tableSelection);
+        wait.until(ExpectedConditions.visibilityOfElementLocated(By.xpath("//span[@title='Select Tables']")));
     }
 
     /** Saves the configured task. */
@@ -116,7 +126,7 @@ public class DesignerPage {
             wait.until(ExpectedConditions.invisibilityOfElementLocated(By.xpath("//*[text()='Running']")));
             System.out.println("Task started");
         } catch (Exception e) {
-            System.out.println("Element did not become visible within the timeout or became stale.");
+            System.out.println("Element did not become visible within the timeout or became stale." + e.getMessage());
         }
     }
 

@@ -11,9 +11,9 @@ public class Settings extends General {
       @BeforeMethod
       protected void SetUp() throws IOException, SQLException {
          super.SetUp();
-         this.imsDB.logout();
-         this.imsDB = new IMSJCLSubmit("zos5.qliktech.com", "VICTORK", "VICTORK", "TZACHA.IMS.CNTL");
-         System.out.println("using a different IMS");
+         ///this.imsDB.logout();
+         ///this.imsDB = new IMSJCLSubmit("zos5.qliktech.com", "VICTORK", "VICTORK", "TZACHA.IMS.CNTL");
+         ///System.out.println("using a different IMS");
          imsDB.login();
       }
 
@@ -27,7 +27,7 @@ public class Settings extends General {
         OracleEndpointName = this.manageEndpoints.randomEndpointName("OracleTarget");
         ///SQLEndpointName = this.manageEndpoints.randomEndpointName("SQL_Target");
         this.tasksGeneralPage.enterManageEndpoints();
-        this.manageEndpoints.createIMSsource3(IMSEndpointName, "Endpoint", "IMS", "zos5.qliktech.com", "5461", "VICTORK", "VICTORK", "", "HOSP62_BULK", "HOSP62", "HOSP62_ag", "HOSP62_ag");
+        this.manageEndpoints.createIMSsource3(IMSEndpointName, "Endpoint", "IMS", "zos5.qliktech.com", "5461", "", "", "HOSP62_BULK", "HOSP62", "HOSP62_ag", "HOSP62_ag");
         ///this.manageEndpoints.createIMSsource(IMSEndpointName);
         this.manageEndpoints.createOracletarget(OracleEndpointName);
         ///this.manageEndpoints.createSQLServertarget(SQLEndpointName);

@@ -42,6 +42,7 @@ public class ManageEndpointsPage {
     public void newEndpointConnection() {
         WebElement newEndpoint = this.wait.until(ExpectedConditions.elementToBeClickable(By.xpath("//*[text()='New Endpoint Connection']")));
         safeClick(newEndpoint);
+        wait.until(ExpectedConditions.visibilityOfElementLocated(By.xpath("//*[contains(text(), 'New Endpoint Connection ')]")));
     }
 
     /**
@@ -59,15 +60,9 @@ public class ManageEndpointsPage {
      * @param name The name of the endpoint.
      */
     public void enterEndpointName(String name) {
-        try {
-            WebElement endpointName = this.wait.until(ExpectedConditions.elementToBeClickable(By.xpath("//*[@id='endpointName']")));
-            endpointName.clear();
-            endpointName.sendKeys(name);
-        } catch (StaleElementReferenceException e) {
-            WebElement endpointName = this.wait.until(ExpectedConditions.elementToBeClickable(By.xpath("//*[@id='endpointName']")));
-            endpointName.clear();
-            endpointName.sendKeys(name);
-        }
+        WebElement endpointName = this.wait.until(ExpectedConditions.elementToBeClickable(By.xpath("//*[@id='endpointName']")));
+        endpointName.clear();
+        endpointName.sendKeys(name);
     }
 
     /**
@@ -125,31 +120,25 @@ public class ManageEndpointsPage {
         imsPassword.sendKeys(password);
     }
 
-    public void chooseIMSSolution(String solution){
-        WebElement imsSolution = driver.findElement(By.xpath("//*[@id=\"arcSolution\"]"));
-        imsSolution.sendKeys(solution);
-    }
-
     public void chooseIMSWorkspace(String workspace){
-        WebElement imsWorksapce = driver.findElement(By.xpath("//*[@id=\"arcWorkspace\"]"));
+        WebElement imsWorksapce = driver.findElement(By.xpath("//*[@errlabel=\"queryWorkspace\"]"));
         imsWorksapce.sendKeys(workspace);
     }
 
     public void chooseIMSDataSource(String datasource){
-        WebElement imsDataSource = driver.findElement(By.xpath("//*[@id=\"arcDatasource\"]"));
+        WebElement imsDataSource = driver.findElement(By.xpath("//*[@errlabel=\"queryDatasource\"]"));
         imsDataSource.sendKeys(datasource);
     }
 
-    public void chooseIMSCDCAdapter(String cdcAdapter){
-        WebElement imsDataSource = driver.findElement(By.xpath("//*[@id=\"cdcAdapter\"]"));
-        imsDataSource.sendKeys(cdcAdapter);
-    }
-
     public void chooseIMSCDCWorkspace(String cdcWorkspace){
-        WebElement imsDataSource = driver.findElement(By.xpath("//*[@id=\"cdcWorkspace\"]"));
+        WebElement imsDataSource = driver.findElement(By.xpath("//*[@errlabel=\"captureWorkspace\"]"));
         imsDataSource.sendKeys(cdcWorkspace);
     }
 
+    public void chooseIMSCDCAdapter(String cdcAdapter){
+        WebElement imsDataSource = driver.findElement(By.xpath("//*[@errlabel=\"captureAdapter\"]"));
+        imsDataSource.sendKeys(cdcAdapter);
+    }
 
     /**
      * Create an IMS IBM source endpoint with config.ini parameters
@@ -171,19 +160,19 @@ public class ManageEndpointsPage {
         imsWorksapce.sendKeys(config.getIMSWorkspace());
         WebElement imsDataSource = driver.findElement(By.xpath("//*[@id=\"arcDatasource\"]"));
         imsDataSource.sendKeys(config.getIMSDataSource());
-        //WebElement imsCDCAdapter = driver.findElement(By.xpath("//*[@id=\"cdcAdapter\"]"));
-        //imsCDCAdapter.sendKeys(config.getIMSCDCAdapter());
-        //WebElement imsCDCWorkspace = driver.findElement(By.xpath("//*[@id=\"cdcWorkspace\"]"));
-        //imsCDCWorkspace.sendKeys(config.getIMSCDCWorkspace());
-        Thread.sleep(200);
+        WebElement imsCDCWorkspace = driver.findElement(By.xpath("//*[@id=\"cdcWorkspace\"]"));
+        imsCDCWorkspace.sendKeys(config.getIMSCDCWorkspace());
+        WebElement imsCDCAdapter = driver.findElement(By.xpath("//*[@id=\"cdcAdapter\"]"));
+        imsCDCAdapter.sendKeys(config.getIMSCDCAdapter());
+        Thread.sleep(500);
         testConnectionValid();
         save();
     }
 
     /**
-     * Create an IMS endpoint with user custom parameters
+     * Create an IMS endpoint with user custom parameters without save
      */
-    public void createIMSsource2(String endpointName,String description, String type, String server, String port, String username, String password, String solution, String workspace, String datasource, String cdcAdapter, String cdcWorkspace ) throws InterruptedException {
+    public void createIMSsource2(String endpointName,String description, String type, String server, String port, String username, String password, String workspace, String datasource, String cdcWorkspace, String cdcAdapter) throws InterruptedException {
         newEndpointConnection();
         enterEndpointName(endpointName);
         enterEndpointDescription(description);
@@ -192,12 +181,32 @@ public class ManageEndpointsPage {
         chooseIMSPort(port);
         chooseIMSUsername(username);
         chooseIMSPassword(password);
-        chooseIMSSolution(solution);
         chooseIMSWorkspace(workspace);
         chooseIMSDataSource(datasource);
-        chooseIMSCDCAdapter(cdcAdapter);
         chooseIMSCDCWorkspace(cdcWorkspace);
-        Thread.sleep(200);
+        chooseIMSCDCAdapter(cdcAdapter);
+        Thread.sleep(500);
+    }
+
+    /**
+     * Create an IMS endpoint with user custom parameters and save
+     */
+    public void createIMSsource3(String endpointName,String description, String type, String server, String port, String username, String password, String workspace, String datasource, String cdcWorkspace, String cdcAdapter ) throws InterruptedException {
+        newEndpointConnection();
+        enterEndpointName(endpointName);
+        enterEndpointDescription(description);
+        chooseIMSEndpointType(type);
+        chooseIMSServer(server);
+        chooseIMSPort(port);
+        chooseIMSUsername(username);
+        chooseIMSPassword(password);
+        chooseIMSWorkspace(workspace);
+        chooseIMSDataSource(datasource);
+        chooseIMSCDCWorkspace(cdcWorkspace);
+        chooseIMSCDCAdapter(cdcAdapter);
+        Thread.sleep(500);
+        testConnectionValid();
+        save();
     }
 
     /**
@@ -217,7 +226,7 @@ public class ManageEndpointsPage {
         oracleUsername.sendKeys(config.getOracleUsername());
         WebElement oraclePassword = driver.findElement(By.xpath("//*[@id=\"password\"]"));
         oraclePassword.sendKeys(config.getOraclePassword());
-        Thread.sleep(200);
+        Thread.sleep(500);
         testConnectionValid();
         save();
     }
@@ -243,7 +252,7 @@ public class ManageEndpointsPage {
         sqlPassword.sendKeys(config.getMSSQLPassword());
         WebElement sqlDatabase = driver.findElement(By.xpath("//input[@name='database']"));
         sqlDatabase.sendKeys(config.getMSSQLDatabase());
-        Thread.sleep(200);
+        Thread.sleep(500);
         testConnectionValid();
         save();
     }
@@ -262,7 +271,7 @@ public class ManageEndpointsPage {
     public void testConnectionValid() throws InterruptedException {
         testConnection();
         this.wait.until(ExpectedConditions.visibilityOfElementLocated(By.xpath("//span[contains(@custom-tooltip-text,'Test connection succeeded')]")));
-        Thread.sleep(200);
+        Thread.sleep(500);
     }
 
     /**
@@ -272,7 +281,7 @@ public class ManageEndpointsPage {
         WebElement saveButton = driver.findElement(By.xpath("//*[text()='Save']"));
         safeClick(saveButton);
         this.wait.until(ExpectedConditions.visibilityOfElementLocated(By.xpath("//*[text()='Database was successfully saved']")));
-        Thread.sleep(200);
+        Thread.sleep(500);
     }
 
     /**
@@ -306,7 +315,7 @@ public class ManageEndpointsPage {
      *
      * @param endpointName The name of the endpoint to be deleted.
      */
-    public void deleteEndpointByName(String endpointName) {
+    public void deleteEndpointByName(String endpointName) throws InterruptedException {
         WebElement endpoint = driver.findElement(By.xpath("//*[text()='" + endpointName + "']"));
         safeClick(endpoint);
         actions.contextClick(endpoint).perform();
@@ -314,6 +323,7 @@ public class ManageEndpointsPage {
         WebElement okButton = driver.findElement(By.xpath("//button[text()='OK']"));
         safeClick(okButton);
         System.out.println("Deleted endpoint: " + endpointName);
+        wait.until(ExpectedConditions.invisibilityOfElementLocated(By.xpath("//*[text()='\" + endpointName + \"']")));
     }
 
 }

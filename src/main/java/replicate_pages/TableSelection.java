@@ -73,6 +73,8 @@ public class TableSelection {
     public void searchForTables() {
         WebElement searchButton = wait.until(ExpectedConditions.elementToBeClickable(By.xpath("//*[text()='Search']")));
         safeClick(searchButton);
+        wait.until(ExpectedConditions.elementToBeClickable(By.cssSelector("[class='bottomButtons']>button:nth-child(3)")));
+        System.out.println("All tables appear for choosing");
     }
 
     /** Select one table of the tables available under a schema */

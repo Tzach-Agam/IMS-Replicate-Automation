@@ -19,6 +19,9 @@ public class Parent2Child extends Settings {
         designerPage.startTaskWait();
         monitorPage.waitForFullLoadCompletion("3");
         monitorPage.clickChangeProcessingTab();
+        ///imsDB.retrieveFile("P2CC", config.getJCLPath("CDCOutput.txt", Parent2Child.class));
+        ///monitorPage.checkInsertStatus("0", "3", "4");
+        ///monitorPage.checkDeleteStatus("0", "0", "2");
         monitorPage.stopTask();
         monitorPage.waitForTaskStop();
         moveFileToTargetDir(config.getReplicateTaskLogPath(), config.getTaskLogPath(Parent2Child.class), "reptask_" + TaskName + ".log");

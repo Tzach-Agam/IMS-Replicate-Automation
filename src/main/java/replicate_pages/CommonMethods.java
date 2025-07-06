@@ -41,20 +41,6 @@ public class CommonMethods {
     }
 
     /**
-     * Wait until the task data loader disappears.
-     * Used to wait for task-related data loading to complete.
-     */
-    public void taskDataLoader() {
-        try {
-            WebDriverWait wait = new WebDriverWait(driver, Duration.ofSeconds(10));
-            wait.until(ExpectedConditions.visibilityOfElementLocated(By.cssSelector("[class='loader'][loader-type='ball-clip-rotate-multiple']")));
-            wait.until(ExpectedConditions.invisibilityOfElementLocated(By.cssSelector("[class='loader'][loader-type='ball-clip-rotate-multiple']")));
-        } catch (TimeoutException e) {
-            System.out.println("Timeout while waiting for task data loader: " + e.getMessage());
-        }
-    }
-
-    /**
      * Navigate to the main page in Qlik Replicate.
      * This method opens the dropdown menu and selects the target page based on the provided 'target_page'.
      * @param targetPage The name of the target page to navigate to (e.g., "tasks" or "server").

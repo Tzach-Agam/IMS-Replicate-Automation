@@ -22,7 +22,7 @@ public class Settings extends General {
         OracleEndpointName = this.manageEndpoints.randomEndpointName("OracleTarget");
         ///SQLEndpointName = this.manageEndpoints.randomEndpointName("SQL_Target");
         this.tasksGeneralPage.enterManageEndpoints();
-        this.manageEndpoints.createIMSsource3(IMSEndpointName, "Endpoint", "IMS", "zos5.qliktech.com", "5461", "VICTORK", "VICTORK", "", "HOSP62_BULK", "HOSP62", "HOSP62_ag", "HOSP62_ag");
+        this.manageEndpoints.createIMSsource3(IMSEndpointName, "Endpoint", "IMS", "zos5.qliktech.com", "5461", "", "", "HOSP62_BULK", "HOSP62", "HOSP62_ag", "HOSP62_ag");
         ///this.manageEndpoints.createIMSsource(IMSEndpointName);
         this.manageEndpoints.createOracletarget(OracleEndpointName);
         ///this.manageEndpoints.createSQLServertarget(SQLEndpointName);

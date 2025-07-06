@@ -40,6 +40,7 @@ public class TasksPage {
     public void createNewTask() {
         WebElement createNewTask = driver.findElement(By.xpath("//span[text()='New Task...']"));
         safeClick(createNewTask);
+        wait.until(ExpectedConditions.visibilityOfElementLocated(By.xpath("//span[contains(@title,'New Task')]")));
     }
 
     /**
